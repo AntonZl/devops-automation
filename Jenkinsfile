@@ -1,8 +1,16 @@
 pipeline {
-    agent any
-    tools{
-        maven 'Maven-Jenkins'
+    agent {
+        docker {
+            image 'maven:3.8.1-adoptopenjdk-11'
+            args '-v /root/.m2:/root/.m2'
+        }
     }
+    environment{
+        registry= "toncheto/javaapp"
+        registryCredential = 'dockerhub_id'
+        
+    }
+    
     stages{
         stage('Build Maven'){
             steps{
@@ -13,27 +21,32 @@ pipeline {
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t javatechie/devops-integration .'
+                    sh '''
+                    docker build -t "$registry:$BUILD_NUMBER" .
+                    echo "Listing all images:"
+                    docker images
+                    '''
                 }
             }
         }
-        stage('Push image to Hub'){
-            steps{
-                script{
-                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                   sh 'docker login -u javatechie -p ${dockerhubpwd}'
+//         stage('Push image to Hub'){
+//             steps{
+//                 script{
+//                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+//                    sh 'docker login -u javatechie -p ${dockerhubpwd}'
 
-}
-                   sh 'docker push javatechie/devops-integration'
-                }
-            }
-        }
-        stage('Deploy to k8s'){
-            steps{
-                script{
-                    kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
-                }
-            }
-        }
+//                 }
+//                    sh 'docker push javatechie/devops-integration'
+//                 }
+//             }
+//         }
+        
+//         stage('Deploy to k8s'){
+//             steps{
+//                 script{
+//                     kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
+//                 }
+//             }
+//         }
     }
 }
