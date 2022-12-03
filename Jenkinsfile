@@ -37,7 +37,9 @@ pipeline {
             steps{
                 script{
                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhub-pwd')]) {
-                   sh 'docker login -u toncheto -p ${dockerhub-pwd}'
+                   sh '''
+                       docker login -u toncheto -p "$dockerhub-pwd"
+                   '''
 
                 }
                    sh '''
