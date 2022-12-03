@@ -19,6 +19,18 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
+        stage('Test'){            
+            agent {                
+                docker {
+                    image 'maven:3.8.1-adoptopenjdk-11'
+                    args '-v /root/.m2:/root/.m2'
+                }
+             }
+            steps{                
+                sh 'mvn test'
+            }
+        }        
+        
         stage('Build docker image'){
             agent {
                 docker { image 'docker:20.10.21-alpine3.17' }            
