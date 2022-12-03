@@ -16,7 +16,7 @@ pipeline {
              }
             steps{
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/AntonZl/devops-automation']]])
-                sh 'mvn clean install'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Build docker image'){
