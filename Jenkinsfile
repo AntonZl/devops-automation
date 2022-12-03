@@ -12,13 +12,22 @@ pipeline {
     }
     
     stages{
-        stage('Build Maven'){
+        stage('Build Maven'){            
+            agent {                
+                docker {
+                    image 'maven:3.8.1-adoptopenjdk-11'
+                    args '-v /root/.m2:/root/.m2'
+                }
+             }
             steps{
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/AntonZl/devops-automation']]])
                 sh 'mvn clean install'
             }
         }
         stage('Build docker image'){
+            agent {
+                docker { image 'docker:20.10.21-alpine3.17' }            
+            }
             steps{
                 script{
                     sh '''
