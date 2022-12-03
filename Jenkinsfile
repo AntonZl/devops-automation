@@ -36,9 +36,9 @@ pipeline {
         stage('Push image to Dockerhub'){
             steps{
                 script{
-                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhub-pwd')]) {
+                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                    sh '''
-                       docker login -u toncheto -p "$dockerhub-pwd"
+                       docker login -u toncheto -p "$dockerhubpwd"
                    '''
 
                 }
