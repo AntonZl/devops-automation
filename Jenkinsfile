@@ -61,12 +61,14 @@ pipeline {
             }
         }
         
-//         stage('Deploy to k8s'){
-//             steps{
-//                 script{
-//                     kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8sconfigpwd')
-//                 }
-//             }
-//         }
+        stage('Deploy to Windows Docker'){
+            steps{
+                script{
+                    sh '''
+                    docker run -d -rm -p 8087:8080 --name javaapp "$registry:$BUILD_NUMBER"
+                    '''
+                }
+            }
+        }
     }
 }
