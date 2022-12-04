@@ -18,6 +18,11 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/AntonZl/devops-automation']]])
                 sh 'mvn -B -DskipTests clean package'
             }
+            post {
+              success {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+              }
+            }
         }
         stage('Test'){            
             agent {                
