@@ -65,7 +65,7 @@ pipeline {
             steps{
                 script{
                     sh '''
-                    docker run -d -rm -p 8087:8080 --name javaapp "$registry:$BUILD_NUMBER"
+                    docker run -d --rm -p 8087:8080 --name javaapp "$registry:$BUILD_NUMBER"
                     '''
                 }
             }
